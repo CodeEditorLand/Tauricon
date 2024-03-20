@@ -1,22 +1,43 @@
 {
-  "name": "test",
-  "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
-  "scripts": {
-    "tauri:prod": "tauri",
-    "tauri:source": "node ../../../../bin/tauri",
-    "tauri:source:init": "yarn tauri:source init --tauriPath ..",
-    "tauri:prod:init": "yarn tauri:prod init",
-    "tauri:source:dev": "yarn tauri:source dev",
-    "tauri:prod:dev": "yarn tauri:prod dev",
-    "tauri:source:build": "yarn tauri:source build",
-    "tauri:prod:build": "yarn tauri:prod build"
-  },
-  "author": "",
-  "license": "Apache-2.0 OR MIT",
-  "dependencies": {
-    "cors": "^2.8.5",
-    "express": "^4.17.1"
-  }
+	"name": "test",
+	"version": "0.0.1",
+	"private": false,
+	"description": "",
+	"homepage": "https://github.com/CodeEditorLand/Foundation#readme",
+	"bugs": {
+		"url": "https://github.com/CodeEditorLand/Foundation/issues"
+	},
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/CodeEditorLand/Foundation.git"
+	},
+	"license": "SEE LICENSE IN LICENSE",
+	"author": {
+		"name": "Playform",
+		"email": "Hello@Playform.Cloud",
+		"url": "https://playform.cloud"
+	},
+	"type": "module",
+	"main": "index.js",
+	"scripts": {
+		"prepublishOnly": "TypeScriptESBuild 'Source/**/*.ts'",
+		"tauri:prod": "tauri",
+		"tauri:prod:build": "yarn tauri:prod build",
+		"tauri:prod:dev": "yarn tauri:prod dev",
+		"tauri:prod:init": "yarn tauri:prod init",
+		"tauri:source": "node ../../../../bin/tauri",
+		"tauri:source:build": "yarn tauri:source build",
+		"tauri:source:dev": "yarn tauri:source dev",
+		"tauri:source:init": "yarn tauri:source init --tauriPath .."
+	},
+	"dependencies": {
+		"cors": "^2.8.5",
+		"express": "^4.17.1"
+	},
+	"devDependencies": {
+		"typescript-esbuild": "latest"
+	},
+	"publishConfig": {
+		"access": "public"
+	}
 }
