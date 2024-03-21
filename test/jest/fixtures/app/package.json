@@ -1,24 +1,14 @@
 {
-	"name": "test",
-	"version": "0.0.1",
-	"private": false,
+	"dependencies": {
+		"cors": "^2.8.5",
+		"express": "^4.17.1"
+	},
 	"description": "",
-	"homepage": "https://github.com/CodeEditorLand/Foundation#readme",
-	"bugs": {
-		"url": "https://github.com/CodeEditorLand/Foundation/issues"
+	"devDependencies": {
+		"typescript-esbuild": "latest"
 	},
-	"repository": {
-		"type": "git",
-		"url": "git+https://github.com/CodeEditorLand/Foundation.git"
-	},
-	"license": "SEE LICENSE IN LICENSE",
-	"author": {
-		"name": "Playform",
-		"email": "Hello@Playform.Cloud",
-		"url": "https://playform.cloud"
-	},
-	"type": "module",
 	"main": "index.js",
+	"name": "test",
 	"scripts": {
 		"prepublishOnly": "TypeScriptESBuild 'Source/**/*.ts'",
 		"tauri:prod": "tauri",
@@ -30,14 +20,5 @@
 		"tauri:source:dev": "yarn tauri:source dev",
 		"tauri:source:init": "yarn tauri:source init --tauriPath .."
 	},
-	"dependencies": {
-		"cors": "^2.8.5",
-		"express": "^4.17.1"
-	},
-	"devDependencies": {
-		"typescript-esbuild": "latest"
-	},
-	"publishConfig": {
-		"access": "public"
-	}
+	"type": "module"
 }
