@@ -58,7 +58,7 @@
 		"glob": "10.3.12",
 		"global-agent": "3.0.0",
 		"got": "14.2.1",
-		"imagemin": "8.0.1",
+		"imagemin": "9.0.0",
 		"imagemin-optipng": "8.0.0",
 		"imagemin-zopfli": "7.0.0",
 		"inquirer": "9.2.20",
