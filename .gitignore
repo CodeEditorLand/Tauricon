@@ -37,6 +37,7 @@ coverage
 build/Release
 
 # Dependency directories
+node_modules/
 jspm_packages/
 
 # Typescript v1 declaration files
@@ -58,10 +59,14 @@ typings/
 .yarn-integrity
 
 # dotenv environment variables file
+.env
 
 /.vs
+.DS_Store
 .Thumbs.db
 *.sublime*
 .idea/
+debug.log
+package-lock.json
 .vscode/settings.json
 /test/jest/tmp
