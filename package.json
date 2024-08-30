@@ -26,7 +26,7 @@
 		"read-chunk": "5.0.0",
 		"semver": "7.6.3",
 		"sharp": "0.33.5",
-		"update-notifier": "7.2.0"
+		"update-notifier": "7.3.0"
 	},
 	"description": "Make icons for your Tauri app.",
 	"devDependencies": {
