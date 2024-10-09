@@ -717,16 +717,14 @@ var S,
 											r.splashscreen_type,
 										),
 									);
-								o = y
-									.default(n)
-									.flatten({
-										background: {
-											r: c.r,
-											g: c.g,
-											b: c.b,
-											alpha: 1,
-										},
-									});
+								o = y.default(n).flatten({
+									background: {
+										r: c.r,
+										g: c.g,
+										b: c.b,
+										alpha: 1,
+									},
+								});
 							}
 							R.label = 3;
 						case 3:
