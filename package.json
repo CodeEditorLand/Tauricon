@@ -14,7 +14,7 @@
 		"fs-extra": "11.2.0",
 		"glob": "11.0.0",
 		"global-agent": "3.0.0",
-		"got": "14.4.3",
+		"got": "14.4.4",
 		"imagemin": "9.0.0",
 		"imagemin-optipng": "8.0.0",
 		"imagemin-zopfli": "7.0.0",
