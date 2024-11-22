@@ -47,14 +47,17 @@ const icnsImageList: {
 const pngToIco = require("png-to-ico");
 
 const log = logger("app:spawn");
+
 const warn = logger("app:spawn", chalk.red);
 
 let image: boolean | sharp.Sharp = false;
+
 let spinnerInterval: NodeJS.Timeout | null = null;
 
 const exists = async function (file: string | Buffer): Promise<boolean> {
 	try {
 		await access(file);
+
 		return true;
 	} catch (err) {
 		return false;
@@ -74,8 +77,10 @@ const checkSrc = async (src: string): Promise<boolean | sharp.Sharp> => {
 		return image;
 	} else {
 		const srcExists = await exists(src);
+
 		if (!srcExists) {
 			image = false;
+
 			if (spinnerInterval) clearInterval(spinnerInterval);
 			warn("[ERROR] Source image for tauricon not found");
 			process.exit(1);
@@ -87,7 +92,9 @@ const checkSrc = async (src: string): Promise<boolean | sharp.Sharp> => {
 			// TODO: Validate if file content is svg. is-svg doesn't work with a chunk.
 			if (isPng(buffer) || path.extname(src) === ".svg") {
 				image = sharp(src);
+
 				const meta = await image.metadata();
+
 				if (!meta.hasAlpha || meta.channels !== 4) {
 					if (spinnerInterval) clearInterval(spinnerInterval);
 					warn(
@@ -99,6 +106,7 @@ const checkSrc = async (src: string): Promise<boolean | sharp.Sharp> => {
 				// just because PNG is sneaky, lets look at the
 				// individual pixels for something weird
 				const stats = await image.stats();
+
 				if (stats.isOpaque) {
 					if (spinnerInterval) clearInterval(spinnerInterval);
 					warn(
@@ -110,6 +118,7 @@ const checkSrc = async (src: string): Promise<boolean | sharp.Sharp> => {
 				return image;
 			} else {
 				image = false;
+
 				if (spinnerInterval) clearInterval(spinnerInterval);
 				warn(
 					"[ERROR] Source image for tauricon is not a png or svg file",
@@ -129,8 +138,10 @@ const checkSrc = async (src: string): Promise<boolean | sharp.Sharp> => {
 // TODO: proper type of options and folders
 const uniqueFolders = (options: { [index: string]: any }): any[] => {
 	let folders = [];
+
 	for (const type in options) {
 		const option = options[String(type)];
+
 		if (option.folder) {
 			folders.push(option.folder);
 		}
@@ -138,6 +149,7 @@ const uniqueFolders = (options: { [index: string]: any }): any[] => {
 	// TODO: is compare argument required?
 	// eslint-disable-next-line @typescript-eslint/require-array-sort-compare
 	folders = folders.sort().filter((x, i, a) => !i || x !== a[i - 1]);
+
 	return folders;
 };
 
@@ -161,6 +173,7 @@ const hexToRgb = (
 	);
 
 	const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+
 	return result
 		? {
 				r: parseInt(result[1], 16),
@@ -181,6 +194,7 @@ const validate = async (
 		await ensureDir(target);
 	}
 	const res = await checkSrc(src);
+
 	return res;
 };
 
@@ -209,10 +223,13 @@ const spinner = (): NodeJS.Timeout | null => {
 	}
 	return setInterval(() => {
 		process.stdout.write("/ \r");
+
 		setTimeout(() => {
 			process.stdout.write("- \r");
+
 			setTimeout(() => {
 				process.stdout.write("\\ \r");
+
 				setTimeout(() => {
 					process.stdout.write("| \r");
 				}, 100);
@@ -224,6 +241,7 @@ const spinner = (): NodeJS.Timeout | null => {
 const tauricon = {
 	validate: async function (src: string, target: string) {
 		await validate(src, target);
+
 		return typeof image === "object";
 	},
 	version: function () {
@@ -246,6 +264,7 @@ const tauricon = {
 		await this.icns(src, target, options, strategy);
 		progress("Building Tauri png icons");
 		await this.build(src, target, options);
+
 		if (strategy) {
 			progress(`Minifying assets with ${strategy}`);
 			await this.minify(target, options, strategy, "batch");
@@ -253,7 +272,9 @@ const tauricon = {
 			log("no minify strategy");
 		}
 		progress("Tauricon Finished");
+
 		if (spinnerInterval) clearInterval(spinnerInterval);
+
 		return true;
 	},
 
@@ -271,12 +292,14 @@ const tauricon = {
 		options: { [index: string]: any },
 	) {
 		await this.validate(src, target);
+
 		const sharpSrc = sharp(src); // creates the image object
 		const buildify2 = async function (
 			pvar: [string, number, number],
 		): Promise<void> {
 			try {
 				const pngImage = sharpSrc.resize(pvar[1], pvar[1]);
+
 				if (pvar[2]) {
 					// eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing, @typescript-eslint/no-unsafe-argument
 					const rgb = hexToRgb(options.background_color) || {
@@ -297,6 +320,7 @@ const tauricon = {
 		};
 
 		let output;
+
 		const folders = uniqueFolders(options);
 		// eslint-disable-next-line @typescript-eslint/no-for-in-array
 		for (const n in folders) {
@@ -311,8 +335,10 @@ const tauricon = {
 			// chain up the transforms
 			for (const sizeKey in option.sizes) {
 				const size = option.sizes[String(sizeKey)];
+
 				if (!option.splash) {
 					const dest = `${target}/${option.folder}`;
+
 					if (option.infix === true) {
 						output = `${dest}${path.sep}${option.prefix}${size}x${size}${option.suffix}`;
 					} else {
@@ -344,6 +370,7 @@ const tauricon = {
 		options: { [index: string]: any },
 	) {
 		let output;
+
 		let block = false;
 		// eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing, @typescript-eslint/no-unsafe-argument
 		const rgb = hexToRgb(options.background_color) || {
@@ -359,12 +386,14 @@ const tauricon = {
 		//          - pure (only splashscreen)
 
 		let sharpSrc;
+
 		if (splashSrc === src) {
 			// prevent overlay or pure
 			block = true;
 		}
 		if (block || options.splashscreen_type === "generate") {
 			await this.validate(src, target);
+
 			if (!image) {
 				process.exit(1);
 			}
@@ -409,8 +438,10 @@ const tauricon = {
 
 		for (const optionKey in options) {
 			const option = options[String(optionKey)];
+
 			for (const sizeKey in option.sizes) {
 				const size = option.sizes[String(sizeKey)];
+
 				if (option.splash) {
 					const dest = `${target}${path.sep}${option.folder}`;
 					await ensureDir(dest);
@@ -421,6 +452,7 @@ const tauricon = {
 						output = `${dest}${path.sep}${option.prefix}${option.suffix}`;
 					}
 					const pvar = [output, size];
+
 					let sharpData = sharp(data);
 					// eslint-disable-next-line @typescript-eslint/no-unsafe-argument
 					sharpData = sharpData.resize(pvar[1][0], pvar[1][1]);
@@ -447,17 +479,23 @@ const tauricon = {
 		mode: string,
 	) {
 		let cmd: Plugin;
+
 		const minify = settings.options.minify;
+
 		if (!minify.available.find((x) => x === strategy)) {
 			strategy = minify.type;
 		}
 		switch (strategy) {
 			case "optipng":
 				cmd = optipng(minify.optipngOptions);
+
 				break;
+
 			case "zopfli":
 				cmd = zopfli(minify.zopfliOptions);
+
 				break;
+
 			default:
 				throw new Error("unknown strategy" + strategy);
 		}
@@ -474,7 +512,9 @@ const tauricon = {
 		switch (mode) {
 			case "singlefile":
 				await minifier([target, path.dirname(target)], cmd);
+
 				break;
+
 			case "batch":
 				// eslint-disable-next-line no-case-declarations
 				const folders = uniqueFolders(options);
@@ -491,6 +531,7 @@ const tauricon = {
 					);
 				}
 				break;
+
 			default:
 				warn(
 					"[ERROR] Minify mode must be one of [ singlefile | batch]",
@@ -522,16 +563,20 @@ const tauricon = {
 			await this.validate(src, target);
 
 			const s = sharp(src);
+
 			const icoBuf = await s.resize(32, 32).toBuffer();
 
 			const icns = new Icns();
+
 			for (const key in icnsImageList) {
 				// eslint-disable-next-line security/detect-object-injection
 				const config = icnsImageList[key];
+
 				const data = await s
 					.resize(config.size, config.size)
 					.png({ compressionLevel: 9, effort: 10 })
 					.toBuffer();
+
 				const image = IcnsImage.fromPNG(data, config.ostype);
 				icns.append(image);
 			}
@@ -539,6 +584,7 @@ const tauricon = {
 			writeFileSync(path.join(target, "/icon.icns"), icns.data);
 
 			const out2 = await pngToIco([icoBuf]);
+
 			if (out2 === null) {
 				throw new Error("Failed to create icon.ico");
 			}
@@ -546,6 +592,7 @@ const tauricon = {
 			writeFileSync(path.join(target, "/icon.ico"), out2);
 		} catch (err) {
 			console.error(err);
+
 			throw err;
 		}
 	},

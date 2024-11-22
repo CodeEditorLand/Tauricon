@@ -42,6 +42,7 @@ const getTauriDir = (): string => {
 			"Couldn't recognize the current folder as a part of a Tauri project. It must contain a `tauri.conf.json` file in any subfolder.",
 		);
 		process.exit(1);
+
 		return "";
 	} else {
 		return dirname(resolve(dir, matches[0]));
@@ -49,6 +50,7 @@ const getTauriDir = (): string => {
 };
 
 const appDir = getAppDir() ?? resolve(getTauriDir(), "..");
+
 const tauriDir = getTauriDir();
 
 export { appDir, tauriDir };

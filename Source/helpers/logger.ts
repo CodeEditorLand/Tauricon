@@ -10,6 +10,7 @@ let prevTime: number;
 export default (banner: string, color: chalk.Chalk = chalk.green) => {
 	return (msg?: string) => {
 		const curr = +new Date();
+
 		const diff = curr - (prevTime || curr);
 
 		prevTime = curr;
