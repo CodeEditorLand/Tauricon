@@ -41,6 +41,7 @@ const getTauriDir = (): string => {
 		warn(
 			"Couldn't recognize the current folder as a part of a Tauri project. It must contain a `tauri.conf.json` file in any subfolder.",
 		);
+
 		process.exit(1);
 
 		return "";

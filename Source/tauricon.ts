@@ -82,7 +82,9 @@ const checkSrc = async (src: string): Promise<boolean | sharp.Sharp> => {
 			image = false;
 
 			if (spinnerInterval) clearInterval(spinnerInterval);
+
 			warn("[ERROR] Source image for tauricon not found");
+
 			process.exit(1);
 		} else {
 			const buffer = await readChunk(src, {
@@ -97,9 +99,11 @@ const checkSrc = async (src: string): Promise<boolean | sharp.Sharp> => {
 
 				if (!meta.hasAlpha || meta.channels !== 4) {
 					if (spinnerInterval) clearInterval(spinnerInterval);
+
 					warn(
 						"[ERROR] Source image for tauricon is not transparent",
 					);
+
 					process.exit(1);
 				}
 
@@ -109,9 +113,11 @@ const checkSrc = async (src: string): Promise<boolean | sharp.Sharp> => {
 
 				if (stats.isOpaque) {
 					if (spinnerInterval) clearInterval(spinnerInterval);
+
 					warn(
 						"[ERROR] Source image for tauricon could not be detected as transparent",
 					);
+
 					process.exit(1);
 				}
 
@@ -120,9 +126,11 @@ const checkSrc = async (src: string): Promise<boolean | sharp.Sharp> => {
 				image = false;
 
 				if (spinnerInterval) clearInterval(spinnerInterval);
+
 				warn(
 					"[ERROR] Source image for tauricon is not a png or svg file",
 				);
+
 				process.exit(1);
 			}
 		}
@@ -165,6 +173,7 @@ const hexToRgb = (
 	// https://stackoverflow.com/questions/5623838/rgb-to-hex-and-hex-to-rgb
 	// Expand shorthand form (e.g. "03F") to full form (e.g. "0033FF")
 	const shorthandRegex = /^#?([a-f\d])([a-f\d])([a-f\d])$/i;
+
 	hex = hex.replace(
 		shorthandRegex,
 		function (m: string, r: string, g: string, b: string) {
@@ -193,6 +202,7 @@ const validate = async (
 	if (target !== undefined) {
 		await ensureDir(target);
 	}
+
 	const res = await checkSrc(src);
 
 	return res;
@@ -221,6 +231,7 @@ const spinner = (): NodeJS.Timeout | null => {
 	if ("CI" in process.env || process.argv.some((arg) => arg === "--ci")) {
 		return null;
 	}
+
 	return setInterval(() => {
 		process.stdout.write("/ \r");
 
@@ -257,20 +268,29 @@ const tauricon = {
 		if (!src) {
 			src = path.resolve(appDir, "app-icon.png");
 		}
+
 		spinnerInterval = spinner();
+
 		options = options || settings.options.tauri;
+
 		progress(`Building Tauri icns and ico from "${src}"`);
+
 		await this.validate(src, target);
+
 		await this.icns(src, target, options, strategy);
+
 		progress("Building Tauri png icons");
+
 		await this.build(src, target, options);
 
 		if (strategy) {
 			progress(`Minifying assets with ${strategy}`);
+
 			await this.minify(target, options, strategy, "batch");
 		} else {
 			log("no minify strategy");
 		}
+
 		progress("Tauricon Finished");
 
 		if (spinnerInterval) clearInterval(spinnerInterval);
@@ -307,11 +327,14 @@ const tauricon = {
 						g: undefined,
 						b: undefined,
 					};
+
 					pngImage.flatten({
 						background: { r: rgb.r, g: rgb.g, b: rgb.b, alpha: 1 },
 					});
 				}
+
 				pngImage.png();
+
 				await pngImage.toFile(pvar[0]);
 			} catch (err: Err) {
 				// eslint-disable-next-line @typescript-eslint/no-unsafe-argument
@@ -330,6 +353,7 @@ const tauricon = {
 			// eslint-disable-next-line @typescript-eslint/no-floating-promises
 			ensureDir(`${target}${path.sep}${folder}`);
 		}
+
 		for (const optionKey in options) {
 			const option = options[String(optionKey)];
 			// chain up the transforms
@@ -344,11 +368,13 @@ const tauricon = {
 					} else {
 						output = `${dest}${path.sep}${option.prefix}${option.suffix}`;
 					}
+
 					const pvar: [string, number, number] = [
 						output,
 						size,
 						option.background,
 					];
+
 					await buildify2(pvar);
 				}
 			}
@@ -391,13 +417,16 @@ const tauricon = {
 			// prevent overlay or pure
 			block = true;
 		}
+
 		if (block || options.splashscreen_type === "generate") {
 			await this.validate(src, target);
 
 			if (!image) {
 				process.exit(1);
 			}
+
 			sharpSrc = sharp(src);
+
 			sharpSrc
 				.extend({
 					top: 726,
@@ -434,6 +463,7 @@ const tauricon = {
 				`unknown options.splashscreen_type: ${options.splashscreen_type}`,
 			);
 		}
+
 		const data = await sharpSrc.toBuffer();
 
 		for (const optionKey in options) {
@@ -444,6 +474,7 @@ const tauricon = {
 
 				if (option.splash) {
 					const dest = `${target}${path.sep}${option.folder}`;
+
 					await ensureDir(dest);
 
 					if (option.infix === true) {
@@ -451,6 +482,7 @@ const tauricon = {
 					} else {
 						output = `${dest}${path.sep}${option.prefix}${option.suffix}`;
 					}
+
 					const pvar = [output, size];
 
 					let sharpData = sharp(data);
@@ -485,6 +517,7 @@ const tauricon = {
 		if (!minify.available.find((x) => x === strategy)) {
 			strategy = minify.type;
 		}
+
 		switch (strategy) {
 			case "optipng":
 				cmd = optipng(minify.optipngOptions);
@@ -521,7 +554,9 @@ const tauricon = {
 				// eslint-disable-next-line @typescript-eslint/no-for-in-array
 				for (const n in folders) {
 					const folder = folders[Number(n)];
+
 					log("batch minify:" + String(folder));
+
 					await minifier(
 						[
 							`${target}${path.sep}${folder}${path.sep}*.png`,
@@ -530,14 +565,17 @@ const tauricon = {
 						cmd,
 					);
 				}
+
 				break;
 
 			default:
 				warn(
 					"[ERROR] Minify mode must be one of [ singlefile | batch]",
 				);
+
 				process.exit(1);
 		}
+
 		return "minified";
 	},
 
@@ -560,6 +598,7 @@ const tauricon = {
 			if (!image) {
 				process.exit(1);
 			}
+
 			await this.validate(src, target);
 
 			const s = sharp(src);
@@ -578,9 +617,12 @@ const tauricon = {
 					.toBuffer();
 
 				const image = IcnsImage.fromPNG(data, config.ostype);
+
 				icns.append(image);
 			}
+
 			ensureFileSync(path.join(target, "/icon.icns"));
+
 			writeFileSync(path.join(target, "/icon.icns"), icns.data);
 
 			const out2 = await pngToIco([icoBuf]);
@@ -588,7 +630,9 @@ const tauricon = {
 			if (out2 === null) {
 				throw new Error("Failed to create icon.ico");
 			}
+
 			ensureFileSync(path.join(target, "/icon.ico"));
+
 			writeFileSync(path.join(target, "/icon.ico"), out2);
 		} catch (err) {
 			console.error(err);
