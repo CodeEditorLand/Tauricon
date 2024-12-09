@@ -57,7 +57,7 @@
 		"type": "opencollective",
 		"url": "https://opencollective.com/tauri"
 	},
-	"name": "@tauri-apps/tauricon",
+	"name": "@codeeditorland/tauricon",
 	"resolutions": {
 		"**/semver-regex": "4.0.3",
 		"**/trim-newlines": "4.0.2"
